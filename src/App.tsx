@@ -17,29 +17,29 @@ export const goodsFromServer: string[] = [
   'Garlic',
 ];
 
-export const SORT = {
-  ALPHABET: 'alp',
-  LENGTH: 'len',
-  REVERSE: 'rev',
-} as const;
+export enum SORT {
+  ALPHABET = 'alp',
+  LENGTH = 'len',
+  REVERSE = 'rev',
+}
 
 export type SortField = (typeof SORT)[keyof typeof SORT];
 
 type FoState = {
   sortField?: typeof SORT.ALPHABET | typeof SORT.LENGTH | '';
-  reversField?: typeof SORT.REVERSE | '';
+  reverseField?: typeof SORT.REVERSE | '';
 };
 type SortType = typeof SORT.ALPHABET | typeof SORT.LENGTH | '';
 type ReverseType = typeof SORT.REVERSE | '';
 
 function getSortedGoods(
   goods: string[],
-  { sortField, reversField }: FoState,
+  { sortField, reverseField }: FoState,
 ): string[] {
-  const prepearGoods: string[] = [...goods];
+  const preparedGoods: string[] = [...goods];
 
   if (sortField) {
-    prepearGoods.sort((good1, good2) => {
+    preparedGoods.sort((good1, good2) => {
       switch (sortField) {
         case SORT.LENGTH:
           return good1.length - good2.length;
@@ -51,19 +51,19 @@ function getSortedGoods(
     });
   }
 
-  if (reversField === SORT.REVERSE) {
-    prepearGoods.reverse();
+  if (reverseField === SORT.REVERSE) {
+    preparedGoods.reverse();
   }
 
-  return prepearGoods;
+  return preparedGoods;
 }
 
 export const App: React.FC = () => {
   const [sortField, setSortField] = useState<SortType>('');
-  const [reversField, setReversField] = useState<ReverseType>('');
+  const [reverseField, setReversField] = useState<ReverseType>('');
   const normalGoods: string[] = getSortedGoods(goodsFromServer, {
     sortField,
-    reversField,
+    reverseField,
   });
   const handleSort = (field: SortType) => setSortField(field);
   const handleReverse = () =>
@@ -100,13 +100,13 @@ export const App: React.FC = () => {
           type="button"
           onClick={handleReverse}
           className={cn('button', 'is-warning', {
-            'is-light': reversField !== SORT.REVERSE,
+            'is-light': reverseField !== SORT.REVERSE,
           })}
         >
           Reverse
         </button>
 
-        {(sortField || reversField) && (
+        {(sortField || reverseField) && (
           <button
             type="button"
             className="button is-danger is-light"
